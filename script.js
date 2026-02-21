@@ -12,16 +12,92 @@ const questionBank = [
     answer: "5",
   },
   {
+    category: "math",
+    question: "(36 - 12) ÷ 6 + 7 の値は？",
+    choices: ["9", "10", "11", "13"],
+    answer: "11",
+  },
+  {
+    category: "math",
+    question: "x : 24 = 3 : 4 のとき、x は？",
+    choices: ["16", "18", "20", "32"],
+    answer: "18",
+  },
+  {
     category: "logic",
-    question: "2, 6, 12, 20, 30, ? に続く数は？",
+    question: "次の図形列の『?』に入るものを選んでください。",
+    figure: {
+      sequence: "▲ ■ ● ｜ ▲ ■ ● ｜ ▲ ■ ？",
+      legend: "同じ3つの図形が順番に繰り返されています。",
+    },
+    choices: ["▲", "■", "●", "◆"],
+    answer: "●",
+  },
+  {
+    category: "logic",
+    question: "次の図形列の規則に従うと、次に来る図形は？",
+    figure: {
+      sequence: "○ △ □ ｜ △ □ ○ ｜ □ ○ △ ｜ ？",
+      legend: "3図形が左に1つずつローテーションしています。",
+    },
+    choices: ["○", "△", "□", "◇"],
+    answer: "○",
+  },
+  {
+    category: "logic",
+    question: "次の図形列で『?』に入るものを選んでください。",
+    figure: {
+      sequence: "★ ☆ ★ ☆ ★ ？",
+      legend: "塗りつぶしと白抜きが交互に並んでいます。",
+    },
+    choices: ["★", "☆", "●", "▲"],
+    answer: "☆",
+  },
+  {
+    category: "logic",
+    question: "数列 2, 6, 12, 20, 30, ? に続く数は？",
     choices: ["36", "40", "42", "44"],
     answer: "42",
   },
   {
-    category: "logic",
-    question: "A→C, C→F, F→J のとき、次は？",
-    choices: ["K", "L", "M", "O"],
-    answer: "O",
+    category: "code",
+    question: "図形暗号の対応に従うと、『◇ ▲ ■』が表す数字はどれ？",
+    figure: {
+      sequence: "●=1 / ▲=2 / ■=3 / ◆=4 / ◇=5",
+      legend: "左から順に数字として読んでください。",
+    },
+    choices: ["523", "532", "5230", "253"],
+    answer: "523",
+  },
+  {
+    category: "code",
+    question: "図形暗号：『■ ● ▲』が表す数字は？",
+    figure: {
+      sequence: "●=1 / ▲=2 / ■=3 / ◆=4 / ◇=5",
+      legend: "企業試験で出る記号置換の基本パターンです。",
+    },
+    choices: ["312", "321", "132", "213"],
+    answer: "312",
+  },
+  {
+    category: "code",
+    question: "対応表に従い『◆ ◇ ●』を数字へ変換すると？",
+    figure: {
+      sequence: "●=1 / ▲=2 / ■=3 / ◆=4 / ◇=5",
+      legend: "3桁の数字として読み取ります。",
+    },
+    choices: ["451", "415", "541", "145"],
+    answer: "451",
+  },
+  {
+    category: "code",
+    question: "次の図形暗号で『?』に入る記号を選んでください。",
+    figure: {
+      sequence: "● ▲ ■ ◆ ◇ ｜ 1 2 3 4 5 ｜ 2 4 ?",
+      legend: "数字2,4,5に対応する図形を順に選ぶ問題です。",
+    },
+    choices: ["▲", "◆", "◇", "■"],
+    answer: "◇",
   },
   {
     category: "verbal",
@@ -35,6 +111,18 @@ const questionBank = [
     choices: ["推論", "睡眠", "感情", "雑談"],
     answer: "推論",
   },
+  {
+    category: "verbal",
+    question: "『抑制』の反対語として最も適切なのは？",
+    choices: ["促進", "停滞", "分析", "同調"],
+    answer: "促進",
+  },
+  {
+    category: "verbal",
+    question: "文脈上、空欄に入る語として最も適切なのは？『原因を___して再発を防ぐ。』",
+    choices: ["特定", "放置", "分散", "削除"],
+    answer: "特定",
+  },
 ];
 
 const categorySelect = document.getElementById("categorySelect");
@@ -46,6 +134,7 @@ const quizPanel = document.getElementById("quizPanel");
 const resultPanel = document.getElementById("resultPanel");
 const status = document.getElementById("status");
 const questionText = document.getElementById("questionText");
+const figurePrompt = document.getElementById("figurePrompt");
 const choices = document.getElementById("choices");
 const feedback = document.getElementById("feedback");
 const scoreText = document.getElementById("scoreText");
@@ -54,10 +143,24 @@ const weaknessList = document.getElementById("weaknessList");
 let currentQuestions = [];
 let index = 0;
 let correctCount = 0;
-const wrongByCategory = { math: 0, logic: 0, verbal: 0 };
+const wrongByCategory = { math: 0, logic: 0, code: 0, verbal: 0 };
 
 function shuffle(array) {
   return [...array].sort(() => Math.random() - 0.5);
+}
+
+function renderFigure(figure) {
+  if (!figure) {
+    figurePrompt.classList.add("hidden");
+    figurePrompt.innerHTML = "";
+    return;
+  }
+
+  figurePrompt.classList.remove("hidden");
+  figurePrompt.innerHTML = `
+    <div class="sequence">${figure.sequence}</div>
+    <div class="legend">${figure.legend}</div>
+  `;
 }
 
 function startQuiz() {
@@ -71,6 +174,7 @@ function startQuiz() {
   correctCount = 0;
   wrongByCategory.math = 0;
   wrongByCategory.logic = 0;
+  wrongByCategory.code = 0;
   wrongByCategory.verbal = 0;
 
   feedback.textContent = "";
@@ -91,6 +195,7 @@ function showQuestion() {
   const q = currentQuestions[index];
   status.textContent = `第 ${index + 1} 問 / ${currentQuestions.length}`;
   questionText.textContent = q.question;
+  renderFigure(q.figure);
   choices.innerHTML = "";
 
   q.choices.forEach((choice) => {
@@ -136,6 +241,7 @@ function showResult() {
   const labels = {
     math: "四則逆算",
     logic: "法則性",
+    code: "暗号",
     verbal: "言語理解",
   };
 
@@ -159,6 +265,10 @@ function showResult() {
 
 startBtn.addEventListener("click", startQuiz);
 skipBtn.addEventListener("click", () => {
+  if (!currentQuestions[index]) {
+    return;
+  }
+
   wrongByCategory[currentQuestions[index].category] += 1;
   index += 1;
   showQuestion();

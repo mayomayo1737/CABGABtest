@@ -23,13 +23,13 @@
         <article class="card">
           <h2>出題形式を理解</h2>
           <p>
-            暗算、法則性、命令表、言語・非言語など、CAB/GABで求められる思考タイプを短く整理しています。
+            企業選考でよく見かける、暗算・法則性・暗号・言語の典型パターンを、短時間で反復できる構成です。
           </p>
         </article>
         <article class="card">
-          <h2>時間感覚を養う</h2>
+          <h2>図形問題に対応</h2>
           <p>
-            1問ごとに制限時間を設け、本番のスピード感に慣れる設計です。迷ったら飛ばす練習もできます。
+            法則性や暗号で出やすい図形の並び・記号の対応を、テキストだけでなく図形付きで練習できます。
           </p>
         </article>
         <article class="card">
@@ -49,6 +49,7 @@
               <option value="all">すべて</option>
               <option value="math">四則逆算（CAB）</option>
               <option value="logic">法則性（CAB）</option>
+              <option value="code">暗号（CAB）</option>
               <option value="verbal">言語理解（GAB）</option>
             </select>
           </label>
@@ -58,6 +59,7 @@
         <div id="quizPanel" class="quiz hidden">
           <p id="status"></p>
           <h3 id="questionText"></h3>
+          <div id="figurePrompt" class="figure-prompt hidden"></div>
           <div id="choices" class="choices"></div>
           <div class="quiz-actions">
             <button id="skipBtn" class="secondary">この問題をスキップ</button>

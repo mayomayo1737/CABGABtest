@@ -103,6 +103,27 @@ select {
   margin-bottom: 0.8rem;
 }
 
+.figure-prompt {
+  margin-bottom: 0.8rem;
+  background: #f0f4ff;
+  border: 1px solid #d3dcf7;
+  border-radius: 0.7rem;
+  padding: 0.7rem 0.9rem;
+}
+
+.figure-prompt .sequence {
+  font-family: "Segoe UI Symbol", "Yu Gothic", sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 0.08rem;
+  line-height: 1.7;
+}
+
+.figure-prompt .legend {
+  color: var(--muted);
+  font-size: 0.92rem;
+  margin-top: 0.4rem;
+}
+
 .choices {
   display: grid;
   gap: 0.5rem;
